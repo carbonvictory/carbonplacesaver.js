@@ -78,17 +78,17 @@
 		// set up a variable to store the current scroll position
 		var current_scroll_position = 0;
 		
-		return this.each(function(settings) 
+		return this.each(function() 
 		{       
-			current_scroll_position = resume_reading(settings['unique_page_key']);
+			current_scroll_position = resume_reading(settings.unique_page_key);
 		});
 		
 		this.scroll(function() {
 			
-			current_scroll_position = save_place(this, current_scroll_position, settings['sensitivity'], settings['unique_page_key']);
-			if (settings['clear_onfinish'] == true && is_visible(settings['clear_element']))
+			current_scroll_position = save_place(this, current_scroll_position, settings.sensitivity, settings.unique_page_key);
+			if (settings.clear_onfinish == true && is_visible(settings.clear_element))
 			{
-				end_reading(settings['unique_page_key']);
+				end_reading(settings.unique_page_key);
 			}
 			
 		});
