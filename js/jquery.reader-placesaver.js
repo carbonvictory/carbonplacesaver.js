@@ -11,13 +11,20 @@
 	function resume_reading(unique_page_key) 
 	{
 	
-		var saved_scroll_position = $.cookie(settings['unique_page_key']);
+		var saved_scroll_position = $.cookie(unique_page_key);
 		
-		if (saved_scroll_position != null) {
+		if (saved_scroll_position != null) 
+		{
+		
 			$('html, body').animate({scrollTop: saved_scroll_position}, 'slow');
-		}
+			alert('saved scroll position: ' + saved_scroll_position);
+			return saved_scroll_position;
 		
-		return saved_scroll_position;
+		}
+		else
+		{
+			return 0;
+		}
 	
 	}
 	
@@ -45,6 +52,7 @@
 		if (new_scroll_position - current_scroll_position >= sensitivity) 
 		{
 			$.cookie(unique_page_key, new_scroll_position, { expires: 2 });
+			alert('new scroll position: ' + new_scroll_position + ', saved to cookie');
 			return new_scroll_position;
 		}
 	
@@ -68,22 +76,27 @@
 		 *
 		 *	It's recommended that you always pass a unique_page_key and clear_element (if clear_onfinish is set to true)
 		 */
+		var current_uri = window.location.pathname;
+		var default_key = current_uri.replace(/[^\w]/g, '');
+		
+		alert(default_key); //////////
+		
 		var settings = $.extend({
-			'unique_page_key'	: preg_replace('/[^[:alnum:]]/', '', window.location.pathname),
+			'unique_page_key'	: default_key,
 			'sensitivity'		: 100,
 			'clear_onfinish' 	: true,
 			'clear_element'		: 'footer'
 		}, options);
 		
 		// set up a variable to store the current scroll position
-		var current_scroll_position = 0;
+		var current_scroll_position = resume_reading(settings.unique_page_key);
+		alert(current_scroll_position); //////////
 		
-		return this.each(function() 
-		{       
-			current_scroll_position = resume_reading(settings.unique_page_key);
-		});
-		
+		// each time the user scrolls, advance the saved scroll position and save it, and end
+		// the reading session/deleted saved position when we reach the end if clear_onfinish == true
 		this.scroll(function() {
+			
+			alert('scroll');
 			
 			current_scroll_position = save_place(this, current_scroll_position, settings.sensitivity, settings.unique_page_key);
 			if (settings.clear_onfinish == true && is_visible(settings.clear_element))
