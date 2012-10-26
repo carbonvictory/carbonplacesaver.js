@@ -31,7 +31,7 @@ Plugin Options
 
 **clearOnFinish**: If true, the saved place will be deleted when clearElement is scrolled into view. Defaults to _true_.
 
-**clearElement**: The tag, #id, or .class of the element that triggers the end of the content and the clearing of the saved place if clearOnFinish is true. It's strongly recommended you pass a value to this option unless you have a <footer> element at the very end of your page's content. Defaults to 'footer'.
+**clearElement**: The tag, #id, or .class of the element that triggers the end of the content and the clearing of the saved place if clearOnFinish is true. It's **required** that you pass a value to this option unless you have a footer element at the very end of your page's content. Defaults to 'footer'.
 
 Options Example
 ---------------
