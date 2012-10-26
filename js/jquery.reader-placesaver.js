@@ -70,7 +70,7 @@
 		'clear_element'		: 'footer'
 	};
 	
-	$.fn.placesaver = function(options) 
+	$.fn.carbonPlacesaver = function(options) 
 	{
 
 		/*
@@ -90,18 +90,15 @@
 		
 		// each time the user scrolls, advance the saved scroll position and save it, and end
 		// the reading session/deleted saved position when we reach the end if clear_onfinish == true
-		this.scroll(function() {
-			
+		return this.bind('scroll', function() {
+				
 			current_scroll_position = save_place(current_scroll_position, settings, $(this));
 			if (settings.clear_onfinish == true && is_visible(settings.clear_element, $(this)))
 			{
 				end_reading(settings.unique_page_key);
 			}
-			
+				
 		});
-		
-		// return the window element, we don't want to be a c-c-c-combo breaker
-		return this;
 
 	};
 
