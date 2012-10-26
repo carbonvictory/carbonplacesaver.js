@@ -5,8 +5,9 @@
 	<title>Placesaver Example</title>
 	
 	<style>
-	article { width:800px; margin:100px auto; font-family:Helvetica, sans-serif }
+	article { width:800px; margin:100px auto 50px auto; font-family:Helvetica, sans-serif }
 	p { font-size:16px; line-height:1.8em }
+	footer { width:700px; margin:0 auto 100px auto; padding:20px 50px; background:#f5f5f5; font-family:Helvetica, sans-serif }
 	</style>
 	
 </head>
@@ -65,10 +66,14 @@
 		
 	</article>
 	
-	<footer>hey</footer>
+	<footer>
+	
+		<p>This is the end of the article. If you're seeing this, you're done reading and the saved reader position has been cleared.</p>
+	
+	</footer>
 	
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-	<script src="js/jquery.cookie.js"></script>
+	<script src="js/jquery.cookie.min.js"></script>
 	<script src="js/jquery.reader-placesaver.js"></script>
 	<script>
 	$(function() {

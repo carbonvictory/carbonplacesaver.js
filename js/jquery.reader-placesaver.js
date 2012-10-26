@@ -75,11 +75,8 @@
 		 *
 		 *	It's recommended that you always pass a unique_page_key and clear_element (if clear_onfinish is set to true)
 		 */
-		var current_uri = window.location.pathname;
-		var default_key = current_uri.replace(/[^\w]/g, '');
-		
 		var settings = $.extend({
-			'unique_page_key'	: default_key,
+			'unique_page_key'	: window.location.pathname.replace(/[^\w]/g, ''),
 			'sensitivity'		: 100,
 			'clear_onfinish' 	: true,
 			'clear_element'		: 'footer'
