@@ -8,68 +8,6 @@
 ;(function($, document, undefined)
 {
 	
-	function resume_reading(settings) 
-	{
-	
-		var saved_scroll_position = $.cookie(settings.unique_page_key);
-		
-		if (saved_scroll_position != null) 
-		{
-		
-			$('html, body').animate({scrollTop: saved_scroll_position}, 'slow');
-			return saved_scroll_position;
-		
-		}
-		else
-		{
-			return 0;
-		}
-	
-	}
-	
-	function is_visible(element, window) 
-	{
-	
-		var cur_window_top 		= window.scrollTop();
-		var cur_window_bottom 	= cur_window_top + window.height();
-
-		var element_top		= $(element).offset().top;
-		var element_bottom	= element_top + $(element).height();
-
-		return ( (element_bottom >= cur_window_top) && 
-				 (element_top <= cur_window_bottom) && 
-				 (element_bottom <= cur_window_bottom) && 
-				 (element_top >= cur_window_top) );
-	
-	}
-	
-	function save_place(current_scroll_position, settings, window) 
-	{
-	
-		var new_scroll_position = window.scrollTop();
-		
-		if (new_scroll_position - current_scroll_position >= settings.sensitivity) 
-		{
-			$.cookie(settings.unique_page_key, new_scroll_position, { expires: settings.duration });
-		}
-		
-		return new_scroll_position;
-	
-	}
-	
-	function end_reading(unique_page_key)
-	{
-		$.cookie(unique_page_key, null);
-	}
-
-	var default_settings = {
-		'unique_page_key'	: window.location.pathname.replace(/[^\w]/g, ''),
-		'sensitivity'		: 100,
-		'duration'			: 2,
-		'clear_onfinish' 	: true,
-		'clear_element'		: 'footer'
-	};
-	
 	$.fn.carbonPlacesaver = function(options) 
 	{
 
@@ -83,23 +21,95 @@
 		 *
 		 *	It's recommended that you always pass a unique_page_key and clear_element (if clear_onfinish is set to true)
 		 */
-		var settings = $.extend({}, default_settings, options || {});
+		var settings = $.extend({}, $.fn.carbonPlacesaver.defaultSettings, options || {});
+		var placesaver = new Placesaver(settings);
 		
 		// set up a variable to store the current scroll position
-		var current_scroll_position = resume_reading(settings);
+		var current_scroll_position = placesaver.resumeReading();
 		
 		// each time the user scrolls, advance the saved scroll position and save it, and end
 		// the reading session/deleted saved position when we reach the end if clear_onfinish == true
 		return this.bind('scroll', function() {
 				
-			current_scroll_position = save_place(current_scroll_position, settings, $(this));
-			if (settings.clear_onfinish == true && is_visible(settings.clear_element, $(this)))
+			current_scroll_position = placesaver.savePlace(current_scroll_position);
+			if (placesaver.isDoneReading())
 			{
-				end_reading(settings.unique_page_key);
+				placesaver.endReading();
 			}
 				
 		});
 
 	};
+	
+	$.fn.carbonPlacesaver.defaultSettings = {
+        'unique_page_key'	: window.location.pathname.replace(/[^\w]/g, ''),
+		'sensitivity'		: 100,
+		'duration'			: 2,
+		'clear_onfinish' 	: true,
+		'clear_element'		: 'footer'
+    };
+	
+	function Placesaver(settings)
+    {
+        this.placesaver = null;
+        this.settings = settings;
+        return this;
+    }
+	
+	Placesaver.prototype =
+	{
+	
+		resumeReading: function()
+		{
+			var saved_scroll_position = $.cookie(this.settings.unique_page_key);
+			if (saved_scroll_position != null) 
+			{
+				$('html, body').animate({scrollTop: saved_scroll_position}, 'slow');
+				return saved_scroll_position;
+			}
+			else
+			{
+				return 0;
+			}
+		},
+		
+		savePlace: function(current_scroll_position)
+		{
+			var new_scroll_position = $(window).scrollTop();
+			if (new_scroll_position - current_scroll_position >= this.settings.sensitivity) 
+			{
+				$.cookie(this.settings.unique_page_key, new_scroll_position, { expires: this.settings.duration });
+			}
+			
+			return new_scroll_position;
+		},
+		
+		isDoneReading: function()
+		{
+			if (this.settings.clear_onfinish == true)
+			{
+				var cur_window_top 		= $(window).scrollTop();
+				var cur_window_bottom 	= cur_window_top + $(window).height();
+
+				var element_top		= $(this.settings.clear_element).offset().top;
+				var element_bottom	= element_top + $(this.settings.clear_element).height();
+
+				return ( (element_bottom >= cur_window_top) && 
+						 (element_top <= cur_window_bottom) && 
+						 (element_bottom <= cur_window_bottom) && 
+						 (element_top >= cur_window_top) );
+			}
+			else
+			{
+				return false;
+			}
+		},
+		
+		endReading: function()
+		{
+			$.cookie(this.settings.unique_page_key, null);
+		}
+	
+	}
 
 })( jQuery );
