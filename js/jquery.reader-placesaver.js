@@ -1,8 +1,18 @@
-/**
- * A JSDoc comment should begin with a slash and 2 asterisks.
- * Inline tags should be enclosed in braces like {@code this}.
- * @desc Block tags should always start on their own line.
- */
+/******************************************
+ * Carbon Placesaver
+ *
+ * A jQuery plugin that saves a visitor's place (scroll position) when reading content on your website.
+ * Their place remains saved even if they navigate away from the page, close the tab, or exit the browser.
+ * Built and tested with jQuery 1.8.2.
+ *
+ * @author          Scott A. Murray <design@carbonvictory.com>
+ * @copyright       Copyright (c) 2012 Carbon Victory
+ * @license         http://creativecommons.org/licenses/by-sa/3.0/deed.en_US
+ * @link            github
+ * @docs            github readme.md
+ * @version         Version 1.0
+ *
+ ******************************************/
 
 ;(function($, document, undefined)
 {
@@ -35,6 +45,7 @@
 	 *
 	 * {string}		uniquePageKey	An alphanumeric string identifier <strong>unique to the page</strong>.
 	 * {number}		sensitivity		The number of pixels the user must scroll before a new place is saved.
+	 * {mixed}		scrollSpeed		The animation speed when scrolling to a saved position ('slow', 'fast', or milliseconds).
 	 * {number}		duration		The number of days the plugin should save a user's place on a given page.
 	 * {boolean}	clearOnFinish	If true, the saved place will be deleted when clearElement is scrolled into view.
 	 * {string}		clearElement	The tag, #id, or .class of the element that triggers the end of the content.
@@ -42,6 +53,7 @@
 	$.fn.carbonPlacesaver.defaultSettings = {
         'uniquePageKey': window.location.pathname.replace(/[^\w]/g, ''),
 		'sensitivity': 100,
+		'scrollSpeed': 'slow',
 		'duration': 2,
 		'clearOnFinish': true,
 		'clearElement': 'footer'
@@ -78,7 +90,7 @@
 			var savedScrollPosition = $.cookie(this.settings.uniquePageKey);
 			
 			if (savedScrollPosition != null) {
-				$('html, body').animate({scrollTop: savedScrollPosition}, 'slow');
+				$('html, body').animate({scrollTop: savedScrollPosition}, this.settings.scrollSpeed);
 				this.currentScrollPosition = savedScrollPosition;
 			} else {
 				this.currentScrollPosition = 0;
