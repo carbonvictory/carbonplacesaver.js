@@ -1,0 +1,46 @@
+article {
+	display:block;
+	margin:100px auto 50px auto;
+	width:800px
+}
+
+aside {
+	background:#f5f5f5;
+	color:#444;
+	display:block;
+	font-family:Georgia, serif;
+	font-size:1.1em;
+	line-height:1.8em;
+	margin-bottom:1.5em;
+	padding:25px 50px;
+}
+
+footer {
+	background:#f5f5f5;
+	display:block;
+	margin: 0 auto 100px auto;
+	padding:25px 50px;
+	width:700px;
+}
+
+h1 {
+	color:#4b44a2;
+	font-family:Georgia, serif;
+	font-size:1.5em;
+	padding-bottom:1.2em;
+	text-align:center
+}
+
+h2 {
+	color:#222;
+	font-family:Georgia, serif;
+	font-size:1.3em;
+	padding-top:1.0em
+}
+
+p {
+	color:#444;
+	font-family:Georgia, serif;
+	font-size:1.2em;
+	line-height:1.9em
+}
