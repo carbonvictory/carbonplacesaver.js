@@ -10,35 +10,19 @@
 	
 	$.fn.carbonPlacesaver = function(options) 
 	{
-
-		/*
-		 *	$(window).placesaver();	
-		 *
-		 *	unique_page_key: a string identifier ___unique to the page___ (a page id or hash of the canonical url works well)
-		 *	sensitivity: how many pixels the user must scroll before a new position is saved
-		 *	clear_onfinish: if true, the saved reading position will be cleared when the clear_element is wholly visible
-		 *	clear_element: the name, #id, or .class of the element that triggers clear_onfinish, usually a footer element after the page's content
-		 *
-		 *	It's recommended that you always pass a unique_page_key and clear_element (if clear_onfinish is set to true)
-		 */
 		var settings = $.extend({}, $.fn.carbonPlacesaver.defaultSettings, options || {});
 		var placesaver = new Placesaver(settings);
 		
-		// set up a variable to store the current scroll position
-		var current_scroll_position = placesaver.resumeReading();
+		placesaver.resumeReading();
 		
-		// each time the user scrolls, advance the saved scroll position and save it, and end
-		// the reading session/deleted saved position when we reach the end if clear_onfinish == true
 		return this.bind('scroll', function() {
 				
-			current_scroll_position = placesaver.savePlace(current_scroll_position);
-			if (placesaver.isDoneReading())
-			{
+			placesaver.savePlace();
+			if (placesaver.isDoneReading()) {
 				placesaver.endReading();
 			}
 				
 		});
-
 	};
 	
 	$.fn.carbonPlacesaver.defaultSettings = {
@@ -53,6 +37,8 @@
     {
         this.placesaver = null;
         this.settings = settings;
+		this.current_scroll_position = null;
+		
         return this;
     }
 	
@@ -65,23 +51,21 @@
 			if (saved_scroll_position != null) 
 			{
 				$('html, body').animate({scrollTop: saved_scroll_position}, 'slow');
-				return saved_scroll_position;
+				this.current_scroll_position = saved_scroll_position;
 			}
 			else
 			{
-				return 0;
+				this.current_scroll_position = 0;
 			}
 		},
 		
-		savePlace: function(current_scroll_position)
+		savePlace: function()
 		{
 			var new_scroll_position = $(window).scrollTop();
-			if (new_scroll_position - current_scroll_position >= this.settings.sensitivity) 
+			if (new_scroll_position - this.current_scroll_position >= this.settings.sensitivity) 
 			{
 				$.cookie(this.settings.unique_page_key, new_scroll_position, { expires: this.settings.duration });
 			}
-			
-			return new_scroll_position;
 		},
 		
 		isDoneReading: function()
