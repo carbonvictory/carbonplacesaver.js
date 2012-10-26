@@ -8,10 +8,10 @@
 ;(function($, document, undefined)
 {
 	
-	function resume_reading(unique_page_key) 
+	function resume_reading(settings) 
 	{
 	
-		var saved_scroll_position = $.cookie(unique_page_key);
+		var saved_scroll_position = $.cookie(settings.unique_page_key);
 		
 		if (saved_scroll_position != null) 
 		{
@@ -27,14 +27,14 @@
 	
 	}
 	
-	function is_visible(element_id, window) 
+	function is_visible(element, window) 
 	{
 	
 		var cur_window_top 		= window.scrollTop();
 		var cur_window_bottom 	= cur_window_top + window.height();
 
-		var element_top		= $(element_id).offset().top;
-		var element_bottom	= element_top + $(element_id).height();
+		var element_top		= $(element).offset().top;
+		var element_bottom	= element_top + $(element).height();
 
 		return ( (element_bottom >= cur_window_top) && 
 				 (element_top <= cur_window_bottom) && 
@@ -43,14 +43,14 @@
 	
 	}
 	
-	function save_place(current_scroll_position, sensitivity, unique_page_key, window) 
+	function save_place(current_scroll_position, settings, window) 
 	{
 	
 		var new_scroll_position = window.scrollTop();
 		
-		if (new_scroll_position - current_scroll_position >= sensitivity) 
+		if (new_scroll_position - current_scroll_position >= settings.sensitivity) 
 		{
-			$.cookie(unique_page_key, new_scroll_position, { expires: 2 });
+			$.cookie(settings.unique_page_key, new_scroll_position, { expires: settings.duration });
 		}
 		
 		return new_scroll_position;
@@ -65,6 +65,7 @@
 	var default_settings = {
 		'unique_page_key'	: window.location.pathname.replace(/[^\w]/g, ''),
 		'sensitivity'		: 100,
+		'duration'			: 2,
 		'clear_onfinish' 	: true,
 		'clear_element'		: 'footer'
 	};
@@ -85,13 +86,13 @@
 		var settings = $.extend({}, default_settings, options || {});
 		
 		// set up a variable to store the current scroll position
-		var current_scroll_position = resume_reading(settings.unique_page_key);
+		var current_scroll_position = resume_reading(settings);
 		
 		// each time the user scrolls, advance the saved scroll position and save it, and end
 		// the reading session/deleted saved position when we reach the end if clear_onfinish == true
 		this.scroll(function() {
 			
-			current_scroll_position = save_place(current_scroll_position, settings.sensitivity, settings.unique_page_key, $(this));
+			current_scroll_position = save_place(current_scroll_position, settings, $(this));
 			if (settings.clear_onfinish == true && is_visible(settings.clear_element, $(this)))
 			{
 				end_reading(settings.unique_page_key);
