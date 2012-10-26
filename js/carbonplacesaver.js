@@ -3,6 +3,8 @@
  *
  * A jQuery plugin that saves a visitor's place (scroll position) when reading content on your website.
  * Their place remains saved even if they navigate away from the page, close the tab, or exit the browser.
+ * When the visitor finishes reading, the saved place for that page is cleared.
+ *
  * Built and tested with jQuery 1.8.2.
  *
  * @author          Scott A. Murray <design@carbonvictory.com>
