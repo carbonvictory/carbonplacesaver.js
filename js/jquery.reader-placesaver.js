@@ -27,11 +27,11 @@
 	
 	}
 	
-	function is_visible(element_id) 
+	function is_visible(element_id, window) 
 	{
 	
-		var cur_window_top 		= $(window).scrollTop();
-		var cur_window_bottom 	= cur_window_top + $(window).height();
+		var cur_window_top 		= window.scrollTop();
+		var cur_window_bottom 	= cur_window_top + window.height();
 
 		var element_top		= $(element_id).offset().top;
 		var element_bottom	= element_top + $(element_id).height();
@@ -43,10 +43,10 @@
 	
 	}
 	
-	function save_place(current_scroll_position, sensitivity, unique_page_key) 
+	function save_place(current_scroll_position, sensitivity, unique_page_key, window) 
 	{
 	
-		var new_scroll_position = $(window).scrollTop();
+		var new_scroll_position = window.scrollTop();
 		
 		if (new_scroll_position - current_scroll_position >= sensitivity) 
 		{
@@ -62,6 +62,13 @@
 		$.cookie(unique_page_key, null);
 	}
 
+	var default_settings = {
+		'unique_page_key'	: window.location.pathname.replace(/[^\w]/g, ''),
+		'sensitivity'		: 100,
+		'clear_onfinish' 	: true,
+		'clear_element'		: 'footer'
+	};
+	
 	$.fn.placesaver = function(options) 
 	{
 
@@ -71,16 +78,11 @@
 		 *	unique_page_key: a string identifier ___unique to the page___ (a page id or hash of the canonical url works well)
 		 *	sensitivity: how many pixels the user must scroll before a new position is saved
 		 *	clear_onfinish: if true, the saved reading position will be cleared when the clear_element is wholly visible
-		 *	clear_element: the id of the element that triggers clear_onfinish, usually a footer element after the page's content
+		 *	clear_element: the name, #id, or .class of the element that triggers clear_onfinish, usually a footer element after the page's content
 		 *
 		 *	It's recommended that you always pass a unique_page_key and clear_element (if clear_onfinish is set to true)
 		 */
-		var settings = $.extend({
-			'unique_page_key'	: window.location.pathname.replace(/[^\w]/g, ''),
-			'sensitivity'		: 100,
-			'clear_onfinish' 	: true,
-			'clear_element'		: 'footer'
-		}, options);
+		var settings = $.extend({}, default_settings, options || {});
 		
 		// set up a variable to store the current scroll position
 		var current_scroll_position = resume_reading(settings.unique_page_key);
@@ -89,13 +91,16 @@
 		// the reading session/deleted saved position when we reach the end if clear_onfinish == true
 		this.scroll(function() {
 			
-			current_scroll_position = save_place(current_scroll_position, settings.sensitivity, settings.unique_page_key);
-			if (settings.clear_onfinish == true && is_visible(settings.clear_element))
+			current_scroll_position = save_place(current_scroll_position, settings.sensitivity, settings.unique_page_key, $(this));
+			if (settings.clear_onfinish == true && is_visible(settings.clear_element, $(this)))
 			{
 				end_reading(settings.unique_page_key);
 			}
 			
 		});
+		
+		// return the window element, we don't want to be a c-c-c-combo breaker
+		return this;
 
 	};
 
