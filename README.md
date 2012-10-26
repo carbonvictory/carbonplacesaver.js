@@ -7,6 +7,8 @@ When the visitor finishes reading, the saved place for that page is cleared.
 
 Built and tested with jQuery 1.8.2.
 
+See a [live demo of this plugin](http://carbonvictory.com/dev/placesaver/demo.html).
+
 Using the Plugin
 ----------------
 
