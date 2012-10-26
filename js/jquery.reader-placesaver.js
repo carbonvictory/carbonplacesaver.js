@@ -17,7 +17,6 @@
 		{
 		
 			$('html, body').animate({scrollTop: saved_scroll_position}, 'slow');
-			alert('saved scroll position: ' + saved_scroll_position);
 			return saved_scroll_position;
 		
 		}
@@ -28,11 +27,11 @@
 	
 	}
 	
-	function is_visible(window, element_id) 
+	function is_visible(element_id) 
 	{
 	
-		var cur_window_top 		= window.scrollTop();
-		var cur_window_bottom 	= cur_window_top + window.height();
+		var cur_window_top 		= $(window).scrollTop();
+		var cur_window_bottom 	= cur_window_top + $(window).height();
 
 		var element_top		= $(element_id).offset().top;
 		var element_bottom	= element_top + $(element_id).height();
@@ -44,17 +43,17 @@
 	
 	}
 	
-	function save_place(window, current_scroll_position, sensitivity, unique_page_key) 
+	function save_place(current_scroll_position, sensitivity, unique_page_key) 
 	{
 	
-		var new_scroll_position = window.scrollTop();
+		var new_scroll_position = $(window).scrollTop();
 		
 		if (new_scroll_position - current_scroll_position >= sensitivity) 
 		{
 			$.cookie(unique_page_key, new_scroll_position, { expires: 2 });
-			alert('new scroll position: ' + new_scroll_position + ', saved to cookie');
-			return new_scroll_position;
 		}
+		
+		return new_scroll_position;
 	
 	}
 	
@@ -79,8 +78,6 @@
 		var current_uri = window.location.pathname;
 		var default_key = current_uri.replace(/[^\w]/g, '');
 		
-		alert(default_key); //////////
-		
 		var settings = $.extend({
 			'unique_page_key'	: default_key,
 			'sensitivity'		: 100,
@@ -90,15 +87,12 @@
 		
 		// set up a variable to store the current scroll position
 		var current_scroll_position = resume_reading(settings.unique_page_key);
-		alert(current_scroll_position); //////////
 		
 		// each time the user scrolls, advance the saved scroll position and save it, and end
 		// the reading session/deleted saved position when we reach the end if clear_onfinish == true
 		this.scroll(function() {
 			
-			alert('scroll');
-			
-			current_scroll_position = save_place(this, current_scroll_position, settings.sensitivity, settings.unique_page_key);
+			current_scroll_position = save_place(current_scroll_position, settings.sensitivity, settings.unique_page_key);
 			if (settings.clear_onfinish == true && is_visible(settings.clear_element))
 			{
 				end_reading(settings.unique_page_key);
