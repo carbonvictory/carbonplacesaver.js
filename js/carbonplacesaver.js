@@ -11,7 +11,7 @@
  * @copyright       Copyright (c) 2012 Carbon Victory
  * @license         http://creativecommons.org/licenses/by-sa/3.0/deed.en_US
  * @link            https://github.com/carbonvictory/carbonplacesaver.js
- * @docs            github readme.md
+ * @docs            https://github.com/carbonvictory/carbonplacesaver.js/blob/master/README.md
  * @version         Version 1.0
  *
  ******************************************/
@@ -23,7 +23,7 @@
 		var settings = $.extend({}, $.fn.carbonPlacesaver.defaultSettings, options || {});
 		
 		// create and initialize the placesaver object and scroll to saved position if needed
-		var placesaver = new Placesaver(settings);
+		var placesaver = new Placesaver(settings, this);
 		placesaver.resumeReading();
 		
 		/** 
@@ -64,9 +64,9 @@
 	/**
 	 * Initializes the Placesaver object.
 	 */
-	function Placesaver(settings) {
-        this.placesaver = null;
+	function Placesaver(settings, context) {
         this.settings = settings;
+		this.context = context;
 		this.currentScrollPosition = null;
 		
         return this;
@@ -83,7 +83,7 @@
 	 * isDoneReading(): Checks to see if the reader is finished by 1) checking if clearOnFinish is
 	 *     set to TRUE, and if the clearElement (such as page footer) is visible.
 	 *
-	 * endReading(): Clears the saved reader position.
+	 * endReading(): Clears the saved reader position and unbinds the scroll() action from the window.
 	 *
 	 */
 	Placesaver.prototype = {
@@ -100,7 +100,7 @@
 		},
 		
 		savePlace: function() {
-			var new_scroll_position = $(window).scrollTop();
+			var new_scroll_position = $(this.context).scrollTop();
 			
 			if (new_scroll_position - this.currentScrollPosition >= this.settings.sensitivity) {
 				$.cookie(this.settings.uniquePageKey, new_scroll_position, { expires: this.settings.duration });
@@ -109,8 +109,8 @@
 		
 		isDoneReading: function() {
 			if (this.settings.clearOnFinish == true) {
-				var windowTop = $(window).scrollTop();
-				var windowBottom = windowTop + $(window).height();
+				var windowTop = $(this.context).scrollTop();
+				var windowBottom = windowTop + $(this.context).height();
 
 				var clearElementTop	= $(this.settings.clearElement).offset().top;
 				var clearElementBottom	= clearElementTop + $(this.settings.clearElement).height();
@@ -125,6 +125,8 @@
 		},
 		
 		endReading: function() {
+			this.currentScrollPosition = null;
+			$(this.context).unbind('scroll');
 			$.cookie(this.settings.uniquePageKey, null);
 		}
 	
