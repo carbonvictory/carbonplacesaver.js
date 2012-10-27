@@ -100,10 +100,10 @@
 		},
 		
 		savePlace: function() {
-			var new_scroll_position = $(this.context).scrollTop();
+			var newScrollPosition = $(this.context).scrollTop();
 			
-			if (new_scroll_position - this.currentScrollPosition >= this.settings.sensitivity) {
-				$.cookie(this.settings.uniquePageKey, new_scroll_position, { expires: this.settings.duration });
+			if (newScrollPosition - this.currentScrollPosition >= this.settings.sensitivity) {
+				$.cookie(this.settings.uniquePageKey, newScrollPosition, { expires: this.settings.duration });
 			}
 		},
 		
