@@ -48,7 +48,7 @@
 	 * {string}		uniquePageKey	An alphanumeric string identifier <strong>unique to the page</strong>.
 	 * {number}		sensitivity		The number of pixels the user must scroll before a new place is saved.
 	 * {mixed}		scrollSpeed		The animation speed when scrolling to a saved position ('slow', 'fast', or milliseconds).
-	 * {number}		duration		The number of days the plugin should save a user's place on a given page.
+	 * {number}		duration		The number of days the plugin should save a user's place on a given page if cookies are used.
 	 * {boolean}	clearOnFinish	If true, the saved place will be deleted when clearElement is scrolled into view.
 	 * {string}		clearElement	The tag, #id, or .class of the element that triggers the end of the content.
 	 */
@@ -67,6 +67,7 @@
 	function Placesaver(settings, context) {
         this.settings = settings;
 		this.context = context;
+		this.useLocalStorage = (typeof(localStorage) !== 'undefined') ? true : false;
 		this.currentScrollPosition = null;
 		
         return this;
@@ -89,7 +90,11 @@
 	Placesaver.prototype = {
 	
 		resumeReading: function() {
-			var savedScrollPosition = $.cookie(this.settings.uniquePageKey);
+			if (this.useLocalStorage) {
+				var savedScrollPosition = localStorage.getItem(this.settings.uniquePageKey);
+			} else {
+				var savedScrollPosition = $.cookie(this.settings.uniquePageKey);
+			}
 			
 			if (savedScrollPosition != null) {
 				$('html, body').animate({scrollTop: savedScrollPosition}, this.settings.scrollSpeed);
@@ -103,7 +108,11 @@
 			var newScrollPosition = $(this.context).scrollTop();
 			
 			if (newScrollPosition - this.currentScrollPosition >= this.settings.sensitivity) {
-				$.cookie(this.settings.uniquePageKey, newScrollPosition, { expires: this.settings.duration });
+				if (this.useLocalStorage) {
+					localStorage.setItem(this.settings.uniquePageKey, newScrollPosition);
+				} else {
+					$.cookie(this.settings.uniquePageKey, newScrollPosition, { expires: this.settings.duration });
+				}
 			}
 		},
 		
@@ -127,7 +136,12 @@
 		endReading: function() {
 			this.currentScrollPosition = null;
 			$(this.context).unbind('scroll');
-			$.cookie(this.settings.uniquePageKey, null);
+			
+			if (this.useLocalStorage) {
+				localStorage.removeItem(this.settings.uniquePageKey);
+			} else {
+				$.cookie(this.settings.uniquePageKey, null);
+			}
 		}
 	
 	}
