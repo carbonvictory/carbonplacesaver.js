@@ -31,7 +31,7 @@ Options
 
 + **duration**: The number of days the plugin should save a user's place on a given page if cookies are used. Defaults to 2.
 
-+ **clearOnFinish**: If _true_, the saved place will be deleted when clearElement is scrolled into view, or when the reader reaches the bottom of the page if clearElement is supplied. Defaults to _true_.
++ **clearOnFinish**: If _true_, the saved place will be deleted when clearElement is scrolled into view, or when the reader reaches the bottom of the page if no clearElement is supplied. Defaults to _true_.
 
 + **clearElement**: The tag, #id, or .class of the element that triggers the end of the content and the clearing of the saved place if clearOnFinish is true. If none is specified, the saved place will be cleared when the reader reaches the bottom of the page. Defaults to _null_.
 
