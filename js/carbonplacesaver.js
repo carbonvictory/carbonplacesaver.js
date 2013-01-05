@@ -9,7 +9,7 @@
  *
  * @author          Scott A. Murray <design@carbonvictory.com>
  * @copyright       Copyright (c) 2012 Carbon Victory
- * @license         http://creativecommons.org/licenses/by-sa/3.0/deed.en_US
+ * @license         http://opensource.org/licenses/MIT
  * @link            https://github.com/carbonvictory/carbonplacesaver.js
  * @docs            https://github.com/carbonvictory/carbonplacesaver.js/blob/master/README.md
  * @version         Version 1.0
